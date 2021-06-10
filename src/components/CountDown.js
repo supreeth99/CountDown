@@ -1,4 +1,4 @@
-import React, {Component} from 'react'
+import React, {Component } from 'react'
 import moment from 'moment'
 import Control from './Control'
 
@@ -9,52 +9,68 @@ class countDown extends Component{
 
         this.state = {
             duration : this.getRemainingTime(),
-            paused: false
+            paused: false,
+            st:false
         }
     }
-
+    count = 1;
+    
     componentDidMount(){
-       this.resume()
+        
+        this.resume()
     }
 
     componentWillUnmount(){
-        this.paused()
+        this.paused();
+        this.setState({st:!this.state.st})
+        if(this.state.st){
+            window.location.reload(this.state.st
+                )
+        }
+        console.log(this.state.st);
     }
 
     getRemainingTime(){
        let now = moment(),
            birthday = moment([moment().year() , 5, 22]),
            diff = birthday.diff(now)
-
         return moment.duration(diff)
+        
     }
 
     onHandlePause = () =>{
-        
+        // console.log("onhandle function:",this.state.paused)
         this.setState((prevState, props) =>{
             const paused = !prevState.paused
-
             if(paused){
-                this.paused()
+                this.componentWillUnmount()
             } else{
-                this.resume()
-            }
-            
+                this.componentDidMount()
+            }  
             return {paused}
+
         })
     }
 
     paused(){
-        // console.log("clear");
-        clearInterval(this.interval)
+        console.log("inter:",this.inter);
+        clearInterval(this.inter);
+        
     }
-
+   
     resume(){
-        this.interval = setInterval(() =>{
+        if(this.state.st){
+            this.componentDidMount();
+        }
+        
+        // console.log("REsume:",this.state.paused);
+        this.inter = setInterval(() =>{
             this.setState({
-                duration : this.getRemainingTime()
+                duration : this.getRemainingTime(),
+                st: !this.state.st
             })
         }, 1000)
+        console.log("initial:",this.inter);
     }
 
     render(){
